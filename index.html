@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="hikari">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>始発スタジオ｜シーンで選ぶフリーBGM</title>
+<meta name="description" content="始発スタジオの楽曲提供ページ。通学・作業・配信・夜ドライブなど、シーンで選べる著作権フリーBGM。試聴・ダウンロード無料。">
+<style>
+  :root{
+    --maxw: 1120px;
+    --radius: 18px;
+    --shadow: 0 8px 30px rgba(0,0,0,.10);
+    /* キャラ固定アクセント（テーマに依らず一定） */
+    --hikari: #2f6df0;
+    --hikari-soft:#eaf1ff;
+    --shion: #22d3ee;
+    --shion-purple:#8b6cff;
+  }
+  /* ひかりテーマ（朝・クリーム・青） */
+  [data-theme="hikari"]{
+    --bg: #f6f4ee;
+    --bg2:#fffdf8;
+    --card:#ffffff;
+    --text:#1d2433;
+    --muted:#6b7280;
+    --line:#ece8df;
+    --accent: var(--hikari);
+    --accent-soft: var(--hikari-soft);
+    --hero1:#dbe9ff; --hero2:#fff6df;
+  }
+  /* しおんテーマ（夜・紺・シアン×紫） */
+  [data-theme="shion"]{
+    --bg:#0c1020;
+    --bg2:#121733;
+    --card:#161c38;
+    --text:#eaf0ff;
+    --muted:#9aa6c7;
+    --line:#26305a;
+    --accent: var(--shion);
+    --accent-soft: rgba(34,211,238,.14);
+    --hero1:#1a2350; --hero2:#241a4d;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:"Segoe UI","Hiragino Kaku Gothic ProN","Meiryo",system-ui,sans-serif;
+    line-height:1.6; transition:background .3s,color .3s;
+  }
+  a{color:inherit}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 18px}
+
+  /* ヘッダー */
+  header{position:sticky; top:0; z-index:30; backdrop-filter:blur(10px);
+    background:color-mix(in srgb,var(--bg2) 82%, transparent); border-bottom:1px solid var(--line)}
+  .bar{display:flex; align-items:center; gap:14px; height:62px}
+  .logo{font-weight:800; letter-spacing:.02em; font-size:1.12rem; display:flex; align-items:center; gap:9px}
+  .logo .dot{width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+  .logo small{font-weight:600; color:var(--muted); font-size:.72rem; margin-left:2px}
+  .spacer{flex:1}
+  .toggle{display:flex; border:1px solid var(--line); border-radius:999px; overflow:hidden; background:var(--card)}
+  .toggle button{border:0;background:transparent;color:var(--muted);padding:7px 14px;cursor:pointer;font-size:.86rem;font-weight:700}
+  .toggle button.on{background:var(--accent); color:#fff}
+  [data-theme="shion"] .toggle button.on{color:#06101f}
+
+  /* ヒーロー */
+  .hero{background:linear-gradient(120deg,var(--hero1),var(--hero2)); border-bottom:1px solid var(--line)}
+  .hero .wrap{padding:48px 18px 40px}
+  .hero h1{margin:0 0 10px; font-size:2rem; letter-spacing:.01em}
+  .hero p{margin:0; max-width:640px; color:var(--text); opacity:.86}
+  .hero .pills{margin-top:18px; display:flex; gap:8px; flex-wrap:wrap}
+  .hero .pills span{background:color-mix(in srgb,var(--card) 70%, transparent); border:1px solid var(--line);
+    padding:5px 12px; border-radius:999px; font-size:.8rem; font-weight:600}
+
+  /* ツールバー */
+  .tools{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:28px 0 6px}
+  .filter{display:flex; gap:8px}
+  .chip{border:1px solid var(--line); background:var(--card); color:var(--muted); border-radius:999px;
+    padding:8px 16px; font-size:.86rem; font-weight:700; cursor:pointer}
+  .chip.on{color:#fff; border-color:transparent}
+  .chip.on[data-c="all"]{background:var(--accent)}
+  .chip.on[data-c="hikari"]{background:var(--hikari)}
+  .chip.on[data-c="shion"]{background:linear-gradient(90deg,var(--shion),var(--shion-purple)); color:#06101f}
+  .count{color:var(--muted); font-size:.85rem; margin-left:auto}
+
+  /* グリッド */
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(248px,1fr)); gap:20px; margin:18px 0 50px}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
+    box-shadow:var(--shadow); display:flex; flex-direction:column; transition:transform .18s, box-shadow .18s}
+  .card:hover{transform:translateY(-4px); box-shadow:0 14px 40px rgba(0,0,0,.16)}
+  .cover{position:relative; aspect-ratio:1/1; overflow:hidden}
+  .cover img{width:100%;height:100%;object-fit:cover; display:block}
+  .charbadge{position:absolute; left:10px; top:10px; font-size:.72rem; font-weight:800; padding:4px 10px; border-radius:999px; color:#fff}
+  .charbadge.hikari{background:rgba(47,109,240,.92)}
+  .charbadge.shion{background:rgba(20,20,32,.78); border:1px solid var(--shion)}
+  .playbtn{position:absolute; right:12px; bottom:12px; width:46px;height:46px;border-radius:50%;
+    border:0; cursor:pointer; background:var(--accent); color:#fff; font-size:1.1rem;
+    display:grid; place-items:center; box-shadow:0 6px 18px rgba(0,0,0,.3)}
+  [data-theme="shion"] .playbtn{color:#06101f}
+  .card.playing .playbtn{background:#ef4444; color:#fff}
+  .body{padding:14px 15px 16px; display:flex; flex-direction:column; gap:10px; flex:1}
+  .ttl{font-weight:800; font-size:1.02rem; line-height:1.3}
+  .src{font-size:.74rem; color:var(--muted)}
+  .scenes{display:flex; flex-wrap:wrap; gap:6px}
+  .scenes b{font-weight:600; font-size:.72rem; color:var(--muted); background:var(--accent-soft);
+    border-radius:6px; padding:3px 8px}
+  .actions{display:flex; gap:8px; margin-top:auto}
+  .btn{flex:1; text-align:center; text-decoration:none; font-weight:700; font-size:.82rem;
+    padding:9px 6px; border-radius:11px; border:1px solid var(--line); cursor:pointer}
+  .btn.yt{background:#ff0033; color:#fff; border-color:transparent}
+  .btn.dl{background:transparent; color:var(--text)}
+  .btn.dl:hover{background:var(--accent-soft)}
+
+  /* 利用規約 */
+  .terms{background:var(--bg2); border-top:1px solid var(--line); padding:42px 0 10px}
+  .terms h2{margin:0 0 14px; font-size:1.3rem}
+  details{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:6px 18px; margin-bottom:12px}
+  summary{cursor:pointer; font-weight:700; padding:10px 0}
+  .terms ul{margin:6px 0 14px; padding-left:20px}
+  .terms li{margin:5px 0}
+  .ok{color:#16a34a; font-weight:700}
+  .ng{color:#dc2626; font-weight:700}
+
+  footer{padding:30px 0 50px; color:var(--muted); font-size:.85rem; text-align:center}
+  footer a.ytlink{display:inline-block; margin-top:10px; background:#ff0033; color:#fff; text-decoration:none;
+    padding:10px 22px; border-radius:999px; font-weight:800}
+  @media(max-width:520px){ .hero h1{font-size:1.55rem} .grid{gap:14px} }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap bar">
+    <div class="logo"><span class="dot"></span>始発スタジオ<small>シーンで選ぶBGM</small></div>
+    <div class="spacer"></div>
+    <div class="toggle" id="theme">
+      <button data-t="hikari" class="on">☀ ひかり</button>
+      <button data-t="shion">☾ しおん</button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>シーンで選ぶ、フリーBGM</h1>
+    <p>通学・作業・配信・夜ドライブ──今いるシーンで選べる著作権フリーBGM。試聴して、気に入ったらそのままダウンロード。動画・配信・SNSで無料で使えます。</p>
+    <div class="pills"><span>✓ 無料利用OK</span><span>✓ クレジット任意</span><span>✓ 配信・実況OK</span></div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="tools">
+    <div class="filter" id="filter">
+      <button class="chip on" data-c="all">すべて</button>
+      <button class="chip" data-c="hikari">ひかり（朝・通学）</button>
+      <button class="chip" data-c="shion">しおん（夜・ゲーム）</button>
+    </div>
+    <div class="count" id="count"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<section class="terms" id="terms">
+  <div class="wrap">
+    <h2>フリーコンテンツ利用規約</h2>
+    <details open>
+      <summary>使えること</summary>
+      <ul>
+        <li><span class="ok">OK</span> 動画・配信・実況・SNS投稿などでの<b>無料利用</b>（個人・商用問わず）</li>
+        <li><span class="ok">OK</span> YouTube・Vlog・ゲーム実況などへの使用</li>
+        <li>クレジット表記は<b>任意</b>です。可能であれば「始発スタジオ」または動画URLの記載をお願いします。</li>
+      </ul>
+    </details>
+    <details>
+      <summary>禁止していること</summary>
+      <ul>
+        <li><span class="ng">禁止</span> 音源そのものの<b>再配布</b>・販売</li>
+        <li><span class="ng">禁止</span> <b>自作発言</b>（自分が作ったとする行為）</li>
+        <li><span class="ng">禁止</span> YouTube等への<b>Content ID登録</b></li>
+      </ul>
+    </details>
+    <p style="color:var(--muted);font-size:.85rem">🎵 本楽曲は音楽制作支援ツールを活用して制作しています。</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>始発スタジオ - シーンで選ぶBGM</div>
+    <a class="ytlink" href="https://www.youtube.com/@shihatsu_bgm" target="_blank" rel="noopener">▶ YouTubeチャンネルを見る</a>
+  </div>
+</footer>
+
+<audio id="player"></audio>
+<script>
+const SONGS = [
+  {title:"Rain-Clear Hymn", char:"hikari", src:"Rain-Clear Hymn", yt:"U3C2_PC35CI", t:0,   mp3:"rain-clear-hymn.mp3",      cover:"img/cover_rainclear.jpg",   scenes:["朝支度","通勤・通学","作業開始","Vlog"]},
+  {title:"Rain-Clear Hymn (裏)", char:"hikari", src:"Rain-Clear Hymn", yt:"U3C2_PC35CI", t:94, mp3:"rain-clear-hymn-ura.mp3", cover:"img/cover_rainclear.jpg",   scenes:["朝支度","落ち着いた朝","作業"]},
+  {title:"梅雨の晴れ間", char:"hikari", src:"Rain-Clear Hymn", yt:"U3C2_PC35CI", t:152, mp3:"tsuyu-no-harema.mp3",      cover:"img/cover_rainclear.jpg",   scenes:["梅雨の晴れ間の外出","通学","Vlog"]},
+  {title:"Pixel Citrus", char:"shion", src:"ゲームメニュー BGM", yt:"N9RZfSLqAOo", t:0,   mp3:"pixel-citrus.mp3",        cover:"img/cover_pixelcitrus.jpg", scenes:["ゲームメニュー","配信待機","作業"]},
+  {title:"ネクサスへの扉", char:"shion", src:"ゲームメニュー BGM", yt:"N9RZfSLqAOo", t:47,  mp3:"nexus-no-tobira.mp3",     cover:"img/cover_pixelcitrus.jpg", scenes:["ロード中","ゲーム導入","配信待機"]},
+  {title:"Cyber Loadinglight", char:"shion", src:"ゲームメニュー BGM", yt:"N9RZfSLqAOo", t:235, mp3:"cyber-loadinglight.mp3", cover:"img/cover_pixelcitrus.jpg", scenes:["ロード画面","ゲームBGM","夜作業"]},
+  {title:"Pixel Citrus (裏)", char:"shion", src:"ゲームメニュー BGM", yt:"N9RZfSLqAOo", t:364, mp3:"pixel-citrus-ura.mp3",   cover:"img/cover_pixelcitrus.jpg", scenes:["メニュー画面","配信待機","作業"]},
+  {title:"ネクサスへの扉 (裏)", char:"shion", src:"ゲームメニュー BGM", yt:"N9RZfSLqAOo", t:401, mp3:"nexus-no-tobira-ura.mp3", cover:"img/cover_pixelcitrus.jpg", scenes:["ロード中","ゲーム導入","夜作業"]},
+  {title:"Cyber Loadinglight (裏)", char:"shion", src:"ゲームメニュー BGM", yt:"N9RZfSLqAOo", t:586, mp3:"cyber-loadinglight-ura.mp3", cover:"img/cover_pixelcitrus.jpg", scenes:["ロード画面","ゲームBGM","夜作業"]},
+];
+
+const grid = document.getElementById('grid');
+const player = document.getElementById('player');
+let filter = 'all', playingIdx = -1;
+
+const fmt = s => `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+const ytUrl = (id,t) => `https://www.youtube.com/watch?v=${id}${t>0?`&t=${t}s`:''}`;
+
+function render(){
+  const list = SONGS.map((s,i)=>({s,i})).filter(x=> filter==='all' || x.s.char===filter);
+  grid.innerHTML = list.map(({s,i})=>`
+    <article class="card" data-i="${i}">
+      <div class="cover">
+        <img src="${s.cover}" alt="${s.title}" loading="lazy">
+        <span class="charbadge ${s.char}">${s.char==='hikari'?'ひかり':'しおん'}</span>
+        <button class="playbtn" data-i="${i}" title="試聴">▶</button>
+      </div>
+      <div class="body">
+        <div class="ttl">${s.title}</div>
+        <div class="src">収録：${s.src}（${fmt(s.t)}〜）</div>
+        <div class="scenes">${s.scenes.map(x=>`<b>${x}</b>`).join('')}</div>
+        <div class="actions">
+          <a class="btn yt" href="${ytUrl(s.yt,s.t)}" target="_blank" rel="noopener">YouTubeで見る</a>
+          <a class="btn dl" href="audio/${s.mp3}" download>ダウンロード</a>
+        </div>
+      </div>
+    </article>`).join('');
+  document.getElementById('count').textContent = `${list.length} 曲`;
+  if(playingIdx>=0){ const c=grid.querySelector(`.card[data-i="${playingIdx}"]`); if(c){c.classList.add('playing'); c.querySelector('.playbtn').textContent='❚❚';} }
+}
+
+grid.addEventListener('click', e=>{
+  const btn = e.target.closest('.playbtn'); if(!btn) return;
+  const i = +btn.dataset.i;
+  if(playingIdx===i){ player.pause(); playingIdx=-1; render(); return; }
+  playingIdx = i;
+  player.src = 'audio/'+SONGS[i].mp3;
+  player.play();
+  render();
+});
+player.addEventListener('ended', ()=>{ playingIdx=-1; render(); });
+
+document.getElementById('filter').addEventListener('click', e=>{
+  const b=e.target.closest('.chip'); if(!b) return;
+  filter=b.dataset.c;
+  document.querySelectorAll('#filter .chip').forEach(c=>c.classList.toggle('on', c===b));
+  render();
+});
+
+document.getElementById('theme').addEventListener('click', e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  const t=b.dataset.t;
+  document.documentElement.setAttribute('data-theme', t);
+  document.querySelectorAll('#theme button').forEach(x=>x.classList.toggle('on', x===b));
+  localStorage.setItem('shihatu-theme', t);
+});
+(function(){
+  const saved = localStorage.getItem('shihatu-theme');
+  if(saved){ document.querySelector(`#theme button[data-t="${saved}"]`)?.click(); }
+})();
+
+render();
+</script>
+</body>
+</html>

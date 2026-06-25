@@ -15,7 +15,7 @@
     --shadow: 0 1px 2px rgba(0,0,0,.05);
     /* キャラ固定色（テーマに依らず一定） */
     --hikari:#b06a4f;  /* 朝・あたたかいテラコッタ */
-    --shion:#4fa39a;   /* 夜・落ち着いたティール */
+    --shion:#57bcc8;   /* 夜・明るめティール（紫地に映える） */
   }
   /* ひかりテーマ（朝・生成り×テラコッタ） */
   [data-theme="hikari"]{
@@ -29,24 +29,24 @@
     --accent-soft:#f0ebe8;
     --pbtn:#1c1c1a; --pbtn-fg:#ffffff;
   }
-  /* しおんテーマ（夜・墨×ティール） */
+  /* しおんテーマ（夜・紫グラデ×ティール／しおんの髪色イメージ） */
   [data-theme="shion"]{
-    --bg:#101012;
-    --bg2:#161618;
-    --card:#191919;
-    --text:#ededea;
-    --muted:#8c8c88;
-    --line:#2b2b2b;
-    --accent:#4fa39a;
-    --accent-soft:rgba(79,163,154,.16);
-    --pbtn:#ededea; --pbtn-fg:#101012;
+    --bg:linear-gradient(160deg,#2a1d4a 0%,#1a1638 52%,#120e26 100%);
+    --bg2:#1c1740;
+    --card:#201a40;
+    --text:#ededf4;
+    --muted:#9a92b6;
+    --line:#342c58;
+    --accent:#57bcc8;
+    --accent-soft:rgba(87,188,200,.16);
+    --pbtn:#ededf4; --pbtn-fg:#15102e;
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{
-    margin:0; background:var(--bg); color:var(--text);
+    margin:0; min-height:100vh; background:var(--bg); color:var(--text);
     font-family:"Zen Kaku Gothic New",-apple-system,"Hiragino Kaku Gothic ProN",sans-serif;
-    line-height:1.65; transition:background .3s,color .3s;
+    line-height:1.65; transition:color .3s;
   }
   a{color:inherit}
   .wrap{max-width:var(--maxw); margin:0 auto; padding:0 18px}
@@ -59,10 +59,9 @@
   .logo .dot{width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
   .logo small{font-weight:600; color:var(--muted); font-size:.72rem; margin-left:2px}
   .spacer{flex:1}
-  .toggle{display:flex; border:1px solid var(--line); border-radius:999px; overflow:hidden; background:var(--card)}
-  .toggle button{border:0;background:transparent;color:var(--muted);padding:7px 14px;cursor:pointer;font-size:.86rem;font-weight:700}
-  .toggle button.on{background:var(--accent); color:#fff}
-  [data-theme="shion"] .toggle button.on{color:#06101f}
+  .hint{font-size:.78rem; color:var(--muted)}
+  .hint b{color:var(--accent); font-weight:700}
+  @media(max-width:560px){ .hint{display:none} }
 
   /* ヒーロー */
   .hero{background:var(--bg2); border-bottom:1px solid var(--line)}
@@ -133,10 +132,7 @@
   <div class="wrap bar">
     <div class="logo"><span class="dot"></span>始発スタジオ<small>シーンで選ぶBGM</small></div>
     <div class="spacer"></div>
-    <div class="toggle" id="theme">
-      <button data-t="hikari" class="on">☀ ひかり</button>
-      <button data-t="shion">☾ しおん</button>
-    </div>
+    <div class="hint">下の<b>ひかり／しおん</b>で雰囲気が切り替わります</div>
   </div>
 </header>
 
@@ -245,23 +241,23 @@ grid.addEventListener('click', e=>{
 });
 player.addEventListener('ended', ()=>{ playingIdx=-1; render(); });
 
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme', t);
+  document.querySelectorAll('#theme button').forEach(x=>x.classList.toggle('on', x.dataset.t===t));
+  localStorage.setItem('shihatu-theme', t);
+}
+
 document.getElementById('filter').addEventListener('click', e=>{
   const b=e.target.closest('.chip'); if(!b) return;
   filter=b.dataset.c;
   document.querySelectorAll('#filter .chip').forEach(c=>c.classList.toggle('on', c===b));
+  if(filter==='hikari' || filter==='shion'){ setTheme(filter); }
   render();
 });
 
-document.getElementById('theme').addEventListener('click', e=>{
-  const b=e.target.closest('button'); if(!b) return;
-  const t=b.dataset.t;
-  document.documentElement.setAttribute('data-theme', t);
-  document.querySelectorAll('#theme button').forEach(x=>x.classList.toggle('on', x===b));
-  localStorage.setItem('shihatu-theme', t);
-});
 (function(){
   const saved = localStorage.getItem('shihatu-theme');
-  if(saved){ document.querySelector(`#theme button[data-t="${saved}"]`)?.click(); }
+  if(saved){ setTheme(saved); }
 })();
 
 render();
